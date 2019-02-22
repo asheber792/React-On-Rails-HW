@@ -47,6 +47,44 @@ class MoviesController < ApplicationController
     end
   end
 
+  def edit 
+    begin
+      @movie = Movie.find(params[:id])
+      render json: {
+        message: "movie selected to update", 
+        movie: @movie 
+      }
+    end 
+  end 
+
+  def update 
+    begin
+      movie = Movie.find(params[:id])
+      movie.update_attributes(movie_params)
+    rescue Exception 
+      render json: {
+        message: "There was some other error" 
+      }, 
+      status: 500
+    end
+  end 
+
+  def destroy
+    begin
+      @movie = Movie.destroy(params[:id]) 
+    rescue ActiveRecord::RecordNotFound
+      render json: {
+        message: "Could not find movie with that ID"
+      }, 
+      status: 404 
+    rescue Exception 
+      render json: {
+        message: "There was some other error" 
+      }, 
+      status: 500
+    end
+  end 
+
   private 
 
   def movie_params
